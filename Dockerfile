@@ -2,15 +2,20 @@
 
 FROM --platform=${BUILDPLATFORM} golang:1.19-alpine as builder
 
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
 RUN apk add build-base
 
 WORKDIR /src
 
 COPY . /src
 
-RUN sh -c "go get && go build -o /backpack cmd/main.go"
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /backpack cmd/main.go
 
-FROM --platform=${BUILDPLATFORM} alpine:latest as runner
+FROM --platform=${TARGETPLATFORM} alpine:latest as runner
 
 COPY --from=builder /backpack ./
 
