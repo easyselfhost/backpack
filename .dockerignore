@@ -1,0 +1,4 @@
+test-config.json
+Dockerfile
+.dockerignore
+.vscode/

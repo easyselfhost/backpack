@@ -1,0 +1,25 @@
+{
+    "version": "0.1",
+    "backups": [
+        {
+            "directories": [
+                {
+                    "path": "cmd"
+                },
+                {
+                    "path": "testing",
+                    "file_rules": [
+                        {
+                            "regex": "files.go",
+                            "command": "ignore"
+                        }
+                    ]
+                }
+            ],
+            "remote_path": "backpack/test",
+            "schedule": {
+                "every": "2m"
+            }
+        }
+    ]
+}
