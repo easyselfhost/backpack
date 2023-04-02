@@ -19,8 +19,9 @@ FROM --platform=${TARGETPLATFORM} alpine:latest as runner
 
 COPY --from=builder /backpack ./
 
-RUN sh -c "apk add sqlite && mkdir /data && mkdir /config"
-
-ENV RCLONE_CONFIG=/config/rclone.conf
+RUN sh -c "apk add sqlite && mkdir /data && \
+    mkdir /config && touch /config/rclone.conf && \
+    mkdir -p /root/.config/rclone && \
+    ln -s /config/rclone.conf /root/.config/rclone/rclone.conf"
 
 CMD ["./backpack", "-try-first", "-config", "/config/config.json"]
