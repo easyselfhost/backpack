@@ -62,8 +62,9 @@ func genJobFunc(name string, wf Workflow) func() {
 		err := wf.Run()
 		if err != nil {
 			glog.Errorf("Job %s: failed to run backup workflow %v", name, err)
+		} else {
+			glog.Infof("Job %s: completed successfully", name)
 		}
-		glog.Infof("Job %s: completed successfully")
 	}
 }
 
