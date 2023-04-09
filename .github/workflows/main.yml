@@ -1,0 +1,22 @@
+name: Go Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest-arm64, ubuntu-latest-x64]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+      - name: Build
+        run: go build -o backpack cmd/main.go
+      - name: Test
+        run: go test ./...
