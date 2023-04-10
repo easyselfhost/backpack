@@ -1,6 +1,18 @@
 name: Go Unit Tests
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - ".github/workflows/test.yml"
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    paths:
+      - ".github/workflows/test.yml"
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
 
 jobs:
   build:

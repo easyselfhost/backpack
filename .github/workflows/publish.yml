@@ -28,4 +28,4 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           tags: |
             easyselfhost/backpack:${{ github.ref }}
-            ${{ github.event.release.prerelease == false && (github.event_name != 'workflow_dispatch' || inputs.publish_latest = 'true') && 'easyselfhost/backpack:latest' }}
+            ${{ github.event.release.prerelease == false && (github.event_name != 'workflow_dispatch' || inputs.publish_latest == 'true') && 'easyselfhost/backpack:latest' }}

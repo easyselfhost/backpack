@@ -8,6 +8,12 @@ on:
     branches:
       - main
       - release
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Dockerfile'
+      - '.github/workflows/main.yml'
 
 jobs:
   build:
