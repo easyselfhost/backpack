@@ -2,7 +2,10 @@ name: Publish Docker Container
 
 on:
   release:
-    types: [published, workflow_dispatch]
+    types: [published]
+  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   publish:
