@@ -10,6 +10,7 @@ import (
 	bp "github.com/easyselfhost/backpack"
 	"github.com/golang/glog"
 	_ "github.com/rclone/rclone/backend/all"
+	_ "github.com/rclone/rclone/fs/sync"
 )
 
 var (
