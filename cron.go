@@ -10,6 +10,8 @@ import (
 	"github.com/golang/glog"
 )
 
+const maxRetries = 3
+
 type Cron struct {
 	scheduler *gocron.Scheduler
 	jobs      map[string]*gocron.Job
@@ -35,7 +37,7 @@ func NewCronFromConfig(config *Config) (*Cron, error) {
 			return nil, fmt.Errorf("no daily schedule or interval schedule is set")
 		}
 
-		wf := NewBackpackFlow(rule)
+		wf := NewRetryingWorkflow(NewBackpackFlow(rule), maxRetries)
 
 		if len(schedule.DailySchedule) > 0 {
 			n := fmt.Sprintf("backup-%d-daily", i)

@@ -1,6 +1,7 @@
 package backpack_test
 
 import (
+	"errors"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -8,6 +9,7 @@ import (
 
 	bp "github.com/easyselfhost/backpack"
 	bt "github.com/easyselfhost/backpack/testing"
+	"github.com/golang/mock/gomock"
 )
 
 var backpackFiles = map[string]string{
@@ -75,5 +77,75 @@ func TestBackpackFlow(t *testing.T) {
 		}
 
 		bt.VerifyTextFile(t, filepath.Join(destDir, name), content)
+	}
+}
+
+func TestRetryingWorkflow_Run(t *testing.T) {
+	type fields struct {
+		retries uint
+		fails   uint
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr bool
+	}{
+		{
+			name: "single success",
+			fields: fields{
+				retries: 0,
+				fails:   0,
+			},
+			wantErr: false,
+		},
+		{
+			name: "single success with retries",
+			fields: fields{
+				retries: 10,
+				fails:   0,
+			},
+			wantErr: false,
+		},
+		{
+			name: "errors eventually success",
+			fields: fields{
+				retries: 3,
+				fails:   3,
+			},
+			wantErr: false,
+		},
+		{
+			name: "errors",
+			fields: fields{
+				retries: 3,
+				fails:   4,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			mockwf := bt.NewMockWorkflow(ctrl)
+
+			wf := bp.NewRetryingWorkflow(mockwf, tt.fields.retries)
+
+			if tt.fields.fails >= tt.fields.retries+1 {
+				mockwf.EXPECT().Run().DoAndReturn(func() error {
+					return errors.New("test error")
+				}).MinTimes(int(tt.fields.retries) + 1).MaxTimes(int(tt.fields.retries) + 1)
+			} else {
+				fc := mockwf.EXPECT().Run().DoAndReturn(func() error {
+					return errors.New("tes terror")
+				}).MaxTimes(int(tt.fields.fails))
+				mockwf.EXPECT().Run().DoAndReturn(func() error {
+					return nil
+				}).After(fc)
+			}
+
+			if err := wf.Run(); (err != nil) != tt.wantErr {
+				t.Errorf("RetryingWorkflow.Run() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
 	}
 }
