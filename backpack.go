@@ -11,6 +11,35 @@ type Workflow interface {
 	Run() error
 }
 
+type RetryingWorkflow struct {
+	workflow Workflow
+	retries  uint
+}
+
+func NewRetryingWorkflow(workflow Workflow, retries uint) Workflow {
+	return &RetryingWorkflow{
+		workflow: workflow,
+		retries:  retries,
+	}
+}
+
+func (wf *RetryingWorkflow) Run() error {
+	err := wf.workflow.Run()
+
+	if err == nil {
+		return nil
+	}
+
+	for i := uint(0); i < wf.retries; i++ {
+		err = wf.workflow.Run()
+		if err == nil {
+			return nil
+		}
+	}
+
+	return err
+}
+
 type BackpackFlow struct {
 	uploadRule BackupRule
 	dirRules   map[string]DirRule
