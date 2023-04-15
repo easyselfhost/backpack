@@ -24,4 +24,4 @@ RUN sh -c "apk add sqlite && mkdir /data && \
     mkdir -p /root/.config/rclone && \
     ln -s /config/rclone.conf /root/.config/rclone/rclone.conf"
 
-CMD ["./backpack", "-try-first", "-config", "/config/config.json"]
+CMD ["./backpack", "-config", "/config/config.json"]
