@@ -7,6 +7,7 @@ import (
 	bp "github.com/easyselfhost/backpack"
 	bt "github.com/easyselfhost/backpack/testing"
 	_ "github.com/rclone/rclone/backend/local"
+	_ "github.com/rclone/rclone/fs/sync"
 )
 
 var uploadFiles = map[string]string{

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	_ "github.com/rclone/rclone/fs/sync"
 	"github.com/rclone/rclone/librclone/librclone"
 )
 
